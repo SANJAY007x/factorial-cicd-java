@@ -1,41 +1,41 @@
 name: Java Factorial CI/CD
 
 on:
-push:
-branches:
-- main
-pull_request:
-branches:
-- main
-workflow_dispatch:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
 
 permissions:
-contents: read
+  contents: read
 
 jobs:
-build-and-test:
-name: Build and Test
-runs-on: ubuntu-latest
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+      - name: Set Up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
 
-  - name: Set Up Java 21
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: '21'
-      cache: maven
+      - name: Build and Run Tests
+        run: mvn --batch-mode clean verify
 
-  - name: Build and Run Tests
-    run: mvn --batch-mode clean verify
-
-  - name: Upload JAR Artifact
-    uses: actions/upload-artifact@v4
-    with:
-      name: factorial-application
-      path: target/*.jar
-      if-no-files-found: error
-
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: factorial-application
+          path: target/*.jar
+          if-no-files-found: error
